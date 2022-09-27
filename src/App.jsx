@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function App() {
   const [board, setBoard] = useState({
@@ -13,6 +13,42 @@ function App() {
     gridNine: ""
   })
   const [currentPlayer, setCurrentPlayer] = useState("X")
+  const [winner, setWinner] = useState("")
+
+  useEffect(()=>{
+    const rowOne = [board.gridOne, board.gridTwo, board.gridThree].every( e => checkForWinner(e))
+    const rowTwo = [board.gridFour, board.gridFive, board.gridSix].every( e => checkForWinner(e))
+    const rowThree = [board.gridSeven, board.gridEight, board.gridNine].every( e => checkForWinner(e))
+
+    const columnOne = [board.gridOne, board.gridFour, board.gridSeven].every( e => checkForWinner(e))
+    const columnTwo = [board.gridTwo, board.gridFive, board.gridEight].every( e => checkForWinner(e))
+    const columnThree = [board.gridThree, board.gridSix, board.gridNine].every( e => checkForWinner(e))
+
+    const diagonalOne = [board.gridOne, board.gridFive, board.gridNine].every( e => checkForWinner(e))
+    const diagonalTwo = [board.gridThree, board.gridFive, board.gridSeven].every( e => checkForWinner(e))
+
+    function checkForWinner(e) {
+      if (e === "X") {
+        return true
+      } else if (e === "O") {
+        return true
+      } else {
+        return false
+      }
+    }
+
+    if (rowOne || rowTwo || rowThree || columnOne || columnTwo || columnThree || diagonalOne || diagonalTwo) {
+      if (currentPlayer === "X") {
+        setWinner("O")
+      } else if (currentPlayer === "O") {
+        setWinner("X")
+      }
+    }
+  }, [board])
+
+  useEffect(()=>{
+    console.log("Game over! " + winner + " wins!")
+  }, [winner])
 
   const getGrid = (rowsIndex, index) => {
     let grid = ""
@@ -55,9 +91,18 @@ function App() {
     setBoard(prevBoard => {
       return {
         ...prevBoard,
-        [gridSpace]: "X"
+        [gridSpace]: currentPlayer
       }
     })
+
+    setCurrentPlayer(prevPlayer => {
+      if (prevPlayer === "X") {
+        return "O"
+      } else if (prevPlayer === "O") {
+        return "X"
+      }
+    })
+
   }
 
   const grids = (rowsIndex) => {
@@ -69,7 +114,9 @@ function App() {
       gridsArray.push(
         <div 
           className="board--grid"
-          onClick={()=>handleClick(gridArray)}
+          onClick={
+            ()=>handleClick(gridArray)
+          }
         >
           <p className="letter">
             {grid}
@@ -99,6 +146,9 @@ function App() {
       </nav>
       <div className="board">
         {rows()}
+      </div>
+      <div className='select'>
+        <button>CPU</button>
       </div>
       <footer>
         <a href="">github</a>
