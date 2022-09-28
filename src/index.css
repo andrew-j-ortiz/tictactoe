@@ -28,12 +28,22 @@ nav {
   width: 100%;
   height: 50px;
   display: flex;
-  align-items: center;
+  justify-content: center;
   font-size: 1.3rem;
 }
 
-nav > h1 {
+.nav-title {
   margin: auto;
+  cursor: pointer;
+}
+
+.nav-link {
+  display: none;
+}
+
+.announcer {
+  padding-top: 28px;
+  padding-bottom: 20px;
 }
 
 footer {
@@ -41,9 +51,8 @@ footer {
   bottom: 0;
 }
 
-
 .board {
-  margin-top: 5%;
+  margin-top: 10px;
   background-color: #e7eaf6;
   border: 1px solid #38598b;
   display: flex;
@@ -61,4 +70,98 @@ footer {
 .letter {
   margin: auto;
   font-size: 4rem;
+}
+
+button {
+  background-color: #113f67;
+  border: solid 2px #e7eaf6;
+  border-radius: 6px;
+  color: #e7eaf6;
+  font-size: 1.4rem;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.select {
+  margin: 10px 0 1px 0;
+}
+
+.cpuEnabled {
+  background-color: greenyellow;
+  color: black;
+  border: solid 2px black;
+}
+
+@media only screen and (min-width: 768px) {
+  nav {
+    height: 80px;
+    font-size: 1.7rem;
+  }
+
+  .announcer {
+    font-size: 1.7rem;
+  }
+
+  .board {
+    width: 364px;
+    height: 364px;
+  }
+  
+  .board--grid {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .letter {
+    margin: auto;
+    font-size: 6rem;
+  }
+
+  button {
+    font-size: 1.7rem;
+    padding: 10px 14px;
+  }
+
+  footer {
+    font-size: 1.5rem;
+    padding-bottom: 4px;
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  nav {
+    height: 60px;
+    font-size: 1.4rem;
+  }
+
+  .announcer {
+    font-size: 1.4rem;
+  }
+
+  button {
+    font-size: 1.7rem;
+    padding: 10px 14px;
+  }
+
+  footer {
+    display: none;
+  }
+
+  nav {
+    justify-content: space-between;
+  }
+
+  .nav-title {
+    margin: 0;
+  }
+
+  .nav-link {
+    text-decoration: none;
+    display: block;
+    color: #e7eaf6;
+  }
+
+  .nav-title, .nav-link {
+    margin: auto 20px;
+  }
 }
