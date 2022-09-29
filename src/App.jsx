@@ -14,9 +14,12 @@ function App() {
   })
   const [currentPlayer, setCurrentPlayer] = useState("X")
   const [gameWon, setGameWon] = useState(false)
+  const [gameStuck, setGameStuck] = useState(false)
   const [winner, setWinner] = useState("")
   const [cpuEnabled, setCpuEnabled] = useState(false)
 
+
+  // Checks to see if the game has been won
   useEffect(()=>{
     const rowOne = [board.gridOne, board.gridTwo, board.gridThree].every(e => {
       if (e !== "" && e === board.gridOne) {
@@ -60,24 +63,125 @@ function App() {
         return true
       }
     })
+    const stuck = [
+      board.gridOne, board.gridTwo, board.gridThree, board.gridFour, board.gridFive, 
+      board.gridSix, board.gridSeven, board.gridEight, board.gridNine
+    ].every(e => {
+      if (e !== "" && gameWon === false) {
+        return true
+      }
+    })
 
-    if (rowOne || rowTwo || rowThree || columnOne || columnTwo || columnThree || diagonalOne || diagonalTwo) {
+    if (rowOne || rowTwo || rowThree || columnOne || 
+        columnTwo || columnThree || diagonalOne || diagonalTwo) {
       setGameWon(true)
-      if (currentPlayer === "X") {
+      if (currentPlayer === "X" && !gameWon) {
         setWinner("O")
-      } else if (currentPlayer === "O") {
+      } else if (currentPlayer === "O" && !gameWon) {
         setWinner("X")
       }
+    } else if (stuck) {
+      setGameStuck(true)
+    } else {
+      cpuPlay()
     }
   }, [board])
 
+
+  //CPU
+  const cpuPlay = () => {
+    if (cpuEnabled && !gameWon && currentPlayer === "O") {
+      setTimeout(()=>{
+        //First row
+        if (board.gridOne === "" && board.gridTwo === "" && board.gridThree === "") {
+          handleClick(["", "gridOne"])
+        } else if (board.gridOne === "O" && board.gridTwo === "" && board.gridThree === "") {
+          handleClick(["", "gridTwo"])
+        } else if (board.gridOne === "O" && board.gridTwo === "O" && board.gridThree === "") {
+          handleClick(["", "gridThree"])
+        // Second row
+        } else if (board.gridFour === "" && board.gridFive === "" && board.gridSix === "") {
+          handleClick(["", "gridFour"])
+        } else if (board.gridFour === "O" && board.gridFive === "" && board.gridSix === "") {
+          handleClick(["", "gridFive"])
+        } else if (board.gridFour === "O" && board.gridFive === "O" && board.gridSix === "") {
+          handleClick(["", "gridSix"])
+        // Third row
+        } else if (board.gridSeven === "" && board.gridEight === "" && board.gridNine === "") {
+          handleClick(["", "gridSeven"])
+        } else if (board.gridSeven === "O" && board.gridEight === "" && board.gridNine === "") {
+          handleClick(["", "gridEight"])
+        } else if (board.gridSeven === "O" && board.gridEight === "O" && board.gridNine === "") {
+          handleClick(["", "gridNine"])
+        // First column
+        } else if (board.gridOne === "" && board.gridFour === "" && board.gridSeven === "" || 
+                   board.gridOne === "" && board.gridFour === "O" && board.gridSeven === "O" ||
+                   board.gridOne === "" && board.gridFour === "O" && board.gridSeven === "") {
+          handleClick(["", "gridOne"])
+        } else if (board.gridOne === "O" && board.gridFour === "" && board.gridSeven === "") {
+          handleClick(["", "gridFour"])
+        } else if (board.gridOne === "O" && board.gridFour === "O" && board.gridSeven === "") {
+          handleClick(["", "gridSeven"])
+        // Second column
+        } else if (board.gridTwo === "" && board.gridFive === "" && board.gridEight === "" ||
+                   board.gridTwo === "" && board.gridFive === "O" && board.gridEight === "O" ||
+                   board.gridTwo === "" && board.gridFive === "O" && board.gridEight === "") {
+          handleClick(["", "gridTwo"])
+        } else if (board.gridTwo === "O" && board.gridFive === "" && board.gridEight === "") {
+          handleClick(["", "gridFive"])
+        } else if (board.gridTwo === "O" && board.gridFive === "O" && board.gridEight === "") {
+          handleClick(["", "gridEight"])
+        // Third column
+        } else if (board.gridThree === "" && board.gridSix === "" && board.gridNine === "" ||
+                   board.gridThree === "" && board.gridSix === "O" && board.gridNine === "O" ||
+                   board.gridThree === "" && board.gridSix === "O" && board.gridNine === "") {
+          handleClick(["", "gridThree"])
+        } else if (board.gridThree === "O" && board.gridSix === "" && board.gridNine === "") {
+          handleClick(["", "gridSix"])
+        } else if (board.gridThree === "O" && board.gridSix === "O" && board.gridNine === "") {
+          handleClick(["", "gridNine"])
+        // First diagonal
+        } else if (board.gridOne === "" && board.gridFive === "" && board.gridNine === "" ||
+                   board.gridOne === "" && board.gridFive === "O" && board.gridNine === "O" ||
+                   board.gridOne === "" && board.gridFive === "O" && board.gridNine === "") {
+          handleClick(["", "gridOne"])
+        } else if (board.gridOne === "O" && board.gridFive === "" && board.gridNine === "") {
+          handleClick(["", "gridFive"])
+        } else if (board.gridOne === "O" && board.gridFive === "O" && board.gridNine === "") {
+          handleClick(["", "gridNine"])
+        // Second diagonal
+        } else if (board.gridThree === "" && board.gridFive === "" && board.gridSeven === "" ||
+                   board.gridThree === "" && board.gridFive === "O" && board.gridSeven === "O" ||
+                   board.gridThree === "" && board.gridFive === "O" && board.gridSeven === "") {
+          handleClick(["", "gridThree"])
+        } else if (board.gridThree === "O" && board.gridFive === "" && board.gridSeven === "") {
+          handleClick(["", "gridFive"])
+        } else if (board.gridThree === "O" && board.gridFive === "O" && board.gridSeven === "") {
+          handleClick(["", "gridSeven"])
+        } else {
+          let freeGrid = ""
+          while (freeGrid === "") {
+            const number = Math.floor(Math.random() * 9)
+            const grid = Object.values(board)[number]
+            if (grid === "") {
+              freeGrid = Object.keys(board)[number]
+            }
+            console.log("infinite loop bruh")
+          }
+          handleClick(["", freeGrid])
+        }
+      }, 1000)
+    }
+  }
+
+  //Resets the game
   useEffect(()=> {
-    if (gameWon) {
+    if (gameWon || gameStuck) {
       setTimeout(()=>{
         resetGame()
       }, 3000)
     }
-  }, [gameWon])
+  }, [gameWon, gameStuck])
 
   const getGrid = (rowsIndex, index) => {
     let grid = ""
@@ -133,7 +237,6 @@ function App() {
         }
       })
     }
-
   }
 
   const grids = (rowsIndex) => {
@@ -145,7 +248,13 @@ function App() {
       gridsArray.push(
         <div 
           className="board--grid"
-          onClick={()=>{ if (!gameWon) {handleClick(gridArray)} }}
+          onClick={()=>{ if (!gameWon) {
+            if (currentPlayer !== "O" && cpuEnabled) {
+              handleClick(gridArray)
+            } else if (!cpuEnabled) {
+              handleClick(gridArray)
+            }
+          } }}
         >
           <p className="letter">
             {grid}
@@ -183,6 +292,17 @@ function App() {
     setCurrentPlayer("X")
     setGameWon(false)
     setWinner("")
+    setGameStuck(false)
+  }
+
+  const announcer = () => {
+    if (gameWon) {
+      return `Game over! ${winner} wins!`
+    } else if (!gameWon && gameStuck) {
+      return `Game over! Draw...`
+    } else {
+      return `${currentPlayer}'s turn`
+    }
   }
 
   return (
@@ -197,9 +317,7 @@ function App() {
       </nav>
       <div className="announcer">
         <h2>
-          {
-            gameWon ? `Game over! ${winner} wins!` : `${currentPlayer}'s turn`
-          }
+          {announcer()}
         </h2>
       </div>
       <div className="board">
